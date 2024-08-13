@@ -5,19 +5,26 @@
 RASPBERRYPI_BINARIES="${RASPBERRYPI_CONFIG}-2020.01.tar.gz"
 RASPBERRYPI_BINARIES_URL="${MENDER_STORAGE_URL}/mender-convert/uboot/raspberrypi/${RASPBERRYPI_BINARIES}"
 
-
-RASPBERRYPI_OS_REQUIRED_ID="raspbian"   # historical distro name of the Raspberry Pi OS Debian derivative
-RASPBERRYPI_OS_MINIMAL_VERSION=12       # this is "bookworm" or later, as it changed the boot partition mount directory
-
+RASPBERRYPI_OS_REQUIRED_ID="raspbian" # historical distro name of the Raspberry Pi OS Debian derivative
 RPI_NEEDS_32BIT="y"
 
-source configs/raspberrypi_common_config
+source configs/include/raspberrypi_common_config
 
 function platform_modify() {
     check_image_bitsize
 
-    if ! check_image_os; then
-        echo "This configuration requires an image based on $RASPBERRYPI_OS_REQUIRED_ID, version $RASPBERRYPI_OS_MINIMAL_VERSION or later."
+    if ! check_image_os_id; then
+        echo "This configuration requires an image based on $RASPBERRYPI_OS_REQUIRED_ID."
+        exit 1
+    fi
+
+    if [ ${RASPBERRYPI_OS_MIN_VERSION:-0} -ne 0 ] && ! check_image_os_version_less_than ${RASPBERRYPI_OS_MIN_VERSION}; then
+        echo "This configuration requires an image based on $RASPBERRYPI_OS_REQUIRED_ID, version $RASPBERRYPI_OS_MIN_VERSION or later."
+        exit 1
+    fi
+
+    if [ ${RASPBERRYPI_OS_MAX_VERSION:-0} -ne 0 ] && ! check_image_os_version_greater_than ${RASPBERRYPI_OS_MAX_VERSION}; then
+        echo "This configuration requires an image based on $RASPBERRYPI_OS_REQUIRED_ID, version $RASPBERRYPI_OS_MAX_VERSION or later."
         exit 1
     fi
 
@@ -110,7 +117,11 @@ function platform_modify() {
     
     # having the boot partition mounted at /uboot means that we have
     # to adjust all (known) references to it accordingly
-    fixup_boot_part_path_references
+    if [ ${RPI_FIXUP_UBOOT_PATH:-} = "y" ]; then
+        log_info "Adjusting /uboot directory references"
+        run_and_log_cmd "sudo mkdir -p work/rootfs/uboot"
+        fixup_boot_part_path_references
+    fi
 
     run_and_log_cmd "sudo install -m 755 work/rpi/binaries/fw_printenv work/rootfs/sbin/fw_printenv"
     run_and_log_cmd "sudo ln -fs /sbin/fw_printenv work/rootfs/sbin/fw_setenv"
