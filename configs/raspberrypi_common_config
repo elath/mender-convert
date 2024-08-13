@@ -88,3 +88,20 @@ function fixup_boot_part_path_references() {
     done
     log_info "Certain service files have been changed to align with our /uboot boot partition mount point. See convert.log for more information"
 }
+
+function check_image_bitsize() {
+    if [ "${RPI_NEEDS_32BIT:-}" == "y" ]; then
+        if file -L work/rootfs/bin/sh | grep -qF "ELF 64-bit"; then
+            echo "This configuration requires a 32-bit image for Raspberry Pi, usally named 'armhf'-variant."
+            exit 1
+        fi
+    elif [ "${RPI_NEEDS_64BIT:-}" == "y" ]; then
+        if file -L work/rootfs/bin/sh | grep -qF "ELF 32-bit"; then
+            echo "This configuration requires a 64-bit image for Raspberry Pi, usally named 'arm64'-variant."
+            exit 1
+        fi
+    else
+        echo "Bitsize check not defined, please set either RPI_NEEDS_32BIT or RPI_NEEDS_64BIT"
+        exit 1
+    fi
+}

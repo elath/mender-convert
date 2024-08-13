@@ -9,13 +9,12 @@ RASPBERRYPI_BINARIES_URL="${MENDER_STORAGE_URL}/mender-convert/uboot/raspberrypi
 RASPBERRYPI_OS_REQUIRED_ID="raspbian"   # historical distro name of the Raspberry Pi OS Debian derivative
 RASPBERRYPI_OS_MINIMAL_VERSION=12       # this is "bookworm" or later, as it changed the boot partition mount directory
 
+RPI_NEEDS_32BIT="y"
+
 source configs/raspberrypi_common_config
 
 function platform_modify() {
-    if file -L work/rootfs/bin/sh | grep -qF "ELF 64-bit"; then
-        echo "There is no 64-bit support for Raspberry Pi yet, please use a 32-bit image".
-        exit 1
-    fi
+    check_image_bitsize
 
     if ! check_image_os; then
         echo "This configuration requires an image based on $RASPBERRYPI_OS_REQUIRED_ID, version $RASPBERRYPI_OS_MINIMAL_VERSION or later."
