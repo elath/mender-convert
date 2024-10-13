@@ -15,12 +15,17 @@
 
 image_version=0.4
 # Golden image from RPI foundation
-# base_img="2024-07-04-raspios-bookworm-arm64-lite.img"
+base_img="2024-07-04-raspios-bookworm-arm64-lite.img"
 # Same as above, but with apt dist-upgrade completed.
-base_img="2024-10-11-raspios-bookworm-arm64-lite_dist-upgrade.img"
+# base_img="2024-10-11-raspios-bookworm-arm64-lite_dist-upgrade.img"
 prepared_img="${base_img:0:-4}"_"${image_version}".img
 tmp_img="tmp.img"
 tmp_img_size=4G
+
+if ! test -f $base_img; then
+    echo "Base image not found. Ensure image specified in this script is available."
+    exit 1
+fi
 
 if ! test -d ./rootfs; then
     echo "Creating rootfs folder"

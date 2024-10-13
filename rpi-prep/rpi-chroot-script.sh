@@ -31,23 +31,23 @@ apt install -y \
         docker-buildx-plugin \
         docker-compose-plugin
         
-# Install Mender pre-requisites
-apt install -y \
-        apt-transport-https \
-        ca-certificates \
-        curl \
-        gnupg-agent \
-        software-properties-common
+# # Install Mender pre-requisites
+# apt install -y \
+#         apt-transport-https \
+#         ca-certificates \
+#         curl \
+#         gnupg-agent \
+#         software-properties-common
 
-curl -fsSL https://downloads.mender.io/repos/debian/gpg | tee /etc/apt/trusted.gpg.d/mender.asc
-sed -i.bak -e "\,https://downloads.mender.io/repos/debian,d" /etc/apt/sources.list
+# curl -fsSL https://downloads.mender.io/repos/debian/gpg | tee /etc/apt/trusted.gpg.d/mender.asc
+# sed -i.bak -e "\,https://downloads.mender.io/repos/debian,d" /etc/apt/sources.list
 
-echo "deb [arch=$(dpkg --print-architecture)] https://downloads.mender.io/repos/debian debian/bookworm/stable main" \
- | tee /etc/apt/sources.list.d/mender.list > /dev/null
+# echo "deb [arch=$(dpkg --print-architecture)] https://downloads.mender.io/repos/debian debian/bookworm/stable main" \
+#  | tee /etc/apt/sources.list.d/mender.list > /dev/null
 
-# Install Mender
-apt update
-apt install mender-client4
+# # Install Mender
+# apt update
+# apt install mender-client4
 
 # Install other tools
 apt install -y \
