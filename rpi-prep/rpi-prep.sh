@@ -19,6 +19,7 @@ base_img="2024-07-04-raspios-bookworm-arm64-lite.img"
 # Same as above, but with apt dist-upgrade completed.
 # base_img="2024-10-11-raspios-bookworm-arm64-lite_dist-upgrade.img"
 prepared_img="${base_img:0:-4}"_"${image_version}".img
+prepared_img_part1="${base_img:0:-4}"_"${image_version}"_part1.img
 tmp_img="tmp.img"
 tmp_img_size=4G
 
@@ -61,10 +62,27 @@ sudo mount --bind /sys ./rootfs/sys
 sudo mount --bind /run ./rootfs/run
 
 echo "Install setup script into rootfs."
-sudo install -o root -m 744 rpi-chroot-script.sh rootfs/root/
+sudo install -o root -m 744 rpi-chroot-script_part1.sh rootfs/root/
+sudo install -o root -m 744 rpi-chroot-script_part2.sh rootfs/root/
+
+eval $(ssh-agent -s)
+if test ! -f ~/$prepared_img_part1; then
+	#Enter into image
+    sudo chroot rootfs bash -c '/root/rpi-chroot-script_part1.sh'
+
+    #Cache part 1
+    sudo umount boot
+    sudo umount rootfs/proc
+    sudo umount rootfs/dev
+    sudo umount rootfs/sys
+    sudo umount rootfs/run
+    sudo umount rootfs
+
+    cp $tmp_img $prepared_img_part1
+fi
 
 #Enter into image
-sudo chroot rootfs bash -c '/root/rpi-chroot-script.sh'
+sudo chroot rootfs bash -c '/root/rpi-chroot-script_part2.sh'
 
 #Exit from image
 

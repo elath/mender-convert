@@ -2,10 +2,6 @@
 
 # This script has been moved out of the main rpi-prep.sh script as it needs to be executed from within the chroot.
 
-echo "Update apt packages."
-apt update
-apt -y dist-upgrade
-
 # Add Docker's official GPG key:
 apt update
 apt install \
@@ -58,4 +54,4 @@ apt install -y \
 ln -s /lib/systemd/system/ssh.service /etc/systemd/system/sshd.service
 ln -s /lib/systemd/system/ssh.service /etc/systemd/system/multi-user.target.wants/ssh.service
 
-echo "end of rpi-chroot-script.sh"
+echo "end of rpi-chroot-script_part2.sh"
