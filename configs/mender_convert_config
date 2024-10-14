@@ -78,7 +78,7 @@ MENDER_DATA_PART_GROWFS=y
 #
 # It defaults to the content of '/etc/hostname', which is extracted from the
 # input disk image
-MENDER_DEVICE_TYPE=""
+MENDER_DEVICE_TYPE="RASPBERRYPI4"
 
 # A string that defines the filenames of the deployed files.This is optional.
 # If no DEPLOY_IMAGE_NAME is defined the filenames will be a combination off
@@ -141,7 +141,7 @@ MENDER_FLASH_VERSION="latest"
 
 # Install Mender Connect addon
 #
-MENDER_ADDON_CONNECT_INSTALL="n"
+MENDER_ADDON_CONNECT_INSTALL="y"
 
 # Mender Connect addon version
 #
