@@ -14,7 +14,7 @@
 # 'none' - No compression
 # 'gzip' - Compress with gzip
 # 'lzma' - Compress with xz (LZMA)
-MENDER_COMPRESS_DISK_IMAGE=gzip
+MENDER_COMPRESS_DISK_IMAGE="none"
 
 # Compression algorithm for Mender Artifact
 #
@@ -22,7 +22,7 @@ MENDER_COMPRESS_DISK_IMAGE=gzip
 #
 # LZMA will produce a smaller Mender Artifact (2-3x) but will significantly
 # increase time spent generating the Mender Artifact (10x)
-MENDER_ARTIFACT_COMPRESSION="gzip"
+MENDER_ARTIFACT_COMPRESSION="none"
 
 # Enable Mender systemd server
 #
