@@ -12,16 +12,21 @@
 ## qemu-utils
 ## qemu-user-static
 
-
+#This SHALL be updated to the correct version number.
 image_version=0.5
+
+#These MAY be left alone,  or changed:
+tmp_img="tmp.img"
+tmp_img_size=4G
+
+#These SHOULD be left alone
 # Golden image from RPI foundation
 base_img="2024-07-04-raspios-bookworm-arm64-lite.img"
 # Same as above, but with apt dist-upgrade completed.
 # base_img="2024-10-11-raspios-bookworm-arm64-lite_dist-upgrade.img"
 prepared_img="${base_img:0:-4}"_"${image_version}".img
 prepared_img_part1="${base_img:0:-4}"_"${image_version}"_part1.img
-tmp_img="tmp.img"
-tmp_img_size=4G
+
 
 if ! test -f $base_img; then
     echo "Base image not found. Ensure image specified in this script is available."
