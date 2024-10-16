@@ -28,7 +28,8 @@ These scripts are set up to prepare an sd image for a raspberry pi 4 configured 
         u-boot-tools
 
 2. Instructions:
-    a. Update the following variables:
+    a. Place the desired base image in rpi-prep/
+    b. Update the following variables:
         i. in rpi-prep/rpi-prep.sh
             1. base_img - The input file to be used. This should be the file name of the image in 1.a. eg. "2024-07-04-raspios-bookworm-arm64-lite.img"
             2. image_version to use. This may or may not be the same as the mender artifact version.
@@ -37,13 +38,14 @@ These scripts are set up to prepare an sd image for a raspberry pi 4 configured 
             1. The input file to be used. This should be the relative path of the image in 1.a. eg. ./2024-07-04-raspios-bookworm-arm64-lite.img
             2. The hosted.mender.com tennant token to be used. eg. "aHvmgUixLJi-uAhNEyFhQzVuHedJsAJqUisSKFZbxVz"
             3. The mender artifact version to use. eg. "1.2"
-    b. change directory to rpi-prep
+    c. change directory to rpi-prep
         i.  run rpi-prep.sh
             1. This script normally caches the dist-upgrade command, as this is quite time consuming to run. This can be prevented by deleting the *.part1.img file in rpi-prep.
-    c. change directory to parent (mender-convert)
+    d. change directory to parent (mender-convert)
         i. run img-convert.sh
-        ii. copy the prepared image to the SD card to be use. eg. sudo dd if=deploy/2024-07-04-raspios-bookworm-arm64-lite_0.5-raspberrypi4_64-mender.img of=/dev/sdb status=progress
-            1. If the bs=4M (or equivalent) option is to be used, beware as the dd function will return very quickly, but the copy process will not actually be complete. Run "sync" to be sure.
+    e. copy the prepared image to the SD card to be use. The final image can be found in the deploy folder.
+        i. eg. sudo dd if=deploy/2024-07-04-raspios-bookworm-arm64-lite_0.5-raspberrypi4_64-mender.img of=/dev/sdb status=progress
+            1. If the bs=4M (or equivalent) option is to be used, beware as the dd function will return very quickly, but the copy process may not actually be complete. Run "sync" to be sure. An 8GB image takes about 1000s to transfer to a u3 grade SD card.
 
 
 In case of issues, contact bryce.klippenstein@gmail.com for assistance.
