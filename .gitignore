@@ -5,3 +5,5 @@ mender_local_config
 *.html
 logs/convert.log*
 *.img*
+rpi-prep/rootfs
+rpi-prep/boot

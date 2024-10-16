@@ -116,7 +116,7 @@ function platform_modify() {
     log_info "Enabling UART in U-Boot configuration"
     cat <<- EOF >> work/boot/config.txt
 
-# Enable UART
-enable_uart=1
+# # Enable UART
+# enable_uart=1
 EOF
 }

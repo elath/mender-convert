@@ -13,7 +13,7 @@
 ## qemu-user-static
 
 
-image_version=0.4
+image_version=0.5
 # Golden image from RPI foundation
 base_img="2024-07-04-raspios-bookworm-arm64-lite.img"
 # Same as above, but with apt dist-upgrade completed.
@@ -52,6 +52,7 @@ if test ! -f ~/$prepared_img_part1; then
     growpart $tmp_img 2
 
     loop_device=$(sudo losetup -f --show -P $tmp_img)
+
     # echo $loop_device
     sudo e2fsck -f -y ${loop_device}p2
     sudo resize2fs ${loop_device}p2
@@ -65,17 +66,19 @@ if test ! -f ~/$prepared_img_part1; then
     sudo mount --bind /dev ./rootfs/dev
     sudo mount --bind /sys ./rootfs/sys
     sudo mount --bind /run ./rootfs/run
+    sudo mount -t devpts none ./rootfs/dev/pts
 
     echo "Install setup script into rootfs."
     sudo install -o root -m 744 rpi-chroot-script_part1.sh rootfs/root/
     sudo install -o root -m 744 rpi-chroot-script_part2.sh rootfs/root/
 
 	#Enter into image
-    sudo chroot rootfs bash -c '/root/rpi-chroot-script_part1.sh'
+    # sudo chroot rootfs bash -c '/root/rpi-chroot-script_part1.sh'
 
     #Cache part 1
     sudo umount boot
     sudo umount rootfs/proc
+    sudo umount rootfs/dev/pts
     sudo umount rootfs/dev
     sudo umount rootfs/sys
     sudo umount rootfs/run
@@ -89,12 +92,15 @@ sudo mount ${loop_device}p2 ./rootfs
 
 sudo mount -t proc /proc ./rootfs/proc
 sudo mount --bind /dev ./rootfs/dev
+sudo mount -t devpts none ./rootfs/dev/pts
 sudo mount --bind /sys ./rootfs/sys
 sudo mount --bind /run ./rootfs/run
 
+sudo cp ./authorized_keys rootfs/root/authorized_keys
+sudo cp ./sudoers.file rootfs/root/sudoers.file
+
 #Enter into image
 sudo chroot rootfs bash -c '/root/rpi-chroot-script_part2.sh'
-
 #Exit from image
 
 #Cleanup
@@ -103,6 +109,7 @@ sudo sleep 5
 
 sudo umount boot
 sudo umount rootfs/proc
+sudo umount rootfs/dev/pts
 sudo umount rootfs/dev
 sudo umount rootfs/sys
 sudo umount rootfs/run
